@@ -1,23 +1,30 @@
 package com.example.recyclerviewexample
 
 import android.content.Intent
+import android.database.Cursor
+import android.media.Image
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.recyclerviewexample.HistoryDatabase.HistoryDetail
 import com.example.recyclerviewexample.TodoDatabase.TodoDetail
 import kotlinx.android.synthetic.main.activity_final_page.*
+import kotlinx.android.synthetic.main.default_page.*
+import kotlinx.android.synthetic.main.run_default_page.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.util.*
 
 var INDEX = 9
+var USER_NOTES: String? = null
 
 class FinalPage : AppCompatActivity(), FinalPageAdapter.IAdapter {
 
@@ -28,20 +35,57 @@ class FinalPage : AppCompatActivity(), FinalPageAdapter.IAdapter {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_final_page)
-        supportActionBar?.title = "Confirm Workout!"
-
-        val recyclerView: RecyclerView = findViewById(R.id.final_page_recyclerview)
-        val adapter = FinalPageAdapter(this)
-        recyclerView.adapter = adapter // adapter for recycler view
-        recyclerView.layoutManager = LinearLayoutManager(this) // defines the horizontal layout
-        // final_page_recyclerview.setHasFixedSize(true) // if we know our recycler view has fixed width and height, we can optimise
-
+        supportActionBar?.hide()
 
 //        initialize viewmodel
         viewModel = ViewModelProvider(this).get(TodoViewModel::class.java)
         viewModel1 = ViewModelProvider(this).get(HistoryViewModel::class.java)
 
+        when (TYPE_TRAINING) {
+            0 -> {}
+
+            1 -> {
+                setContentView(R.layout.default_page)
+                val recyclerView: RecyclerView = findViewById(R.id.defaultPageRecyclerView)
+                val adapter = FinalPageAdapter(this)
+                recyclerView.adapter = adapter // adapter for recycler view
+                recyclerView.layoutManager =
+                    LinearLayoutManager(this) // defines the horizontal layout
+
+//        initialize viewmodel
+//                viewModel = ViewModelProvider(this).get(TodoViewModel::class.java)
+//                viewModel1 = ViewModelProvider(this).get(HistoryViewModel::class.java)
+
+//         set the viewmodel to update our recyclerview adapter
+                viewModel.allTodoDetail.observe(this, Observer {
+                    adapter.updateData(it)
+                })
+                alterINDEX()
+            }
+
+            2 -> {
+                setContentView(R.layout.run_default_page)
+            }
+
+            3 -> {}
+        }
+        supportActionBar?.hide()
+
+        alterUI()
+    }
+
+
+    private fun updateNotesBeforeLeavingPage() {
+        val notesText: String = findViewById<EditText>(R.id.exerciseNotes).text.toString()
+        USER_NOTES = notesText
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent(this, HomePageActivity::class.java)
+        startActivity(intent)
+    }
+
+    private fun alterINDEX() {
         lifecycleScope.launch(Dispatchers.IO) {
             val allTodos = viewModel.getListTodos()
             if (allTodos.isNotEmpty()) {
@@ -50,40 +94,55 @@ class FinalPage : AppCompatActivity(), FinalPageAdapter.IAdapter {
                 INDEX = 9
             }
         }
-//         set the viewmodel to update our recyclerview adapter
-        viewModel.allTodoDetail.observe(this, Observer {
-            adapter.updateData(it)
-        })
     }
 
-    override fun onBackPressed() {
-//        super.onBackPressed()
-    }
+    private fun alterUI() {
+        val notesUI = findViewById<EditText>(R.id.exerciseNotes)
+        notesUI.setText(USER_NOTES)
+        val date = Date()
+        val icon: ImageView = findViewById(R.id.typeExercise)
+        val typeExerciseName = findViewById<TextView>(R.id.typeExerciseName)
+        val dateUI = findViewById<TextView>(R.id.date)
+        val dateDisplay = sdf.format(date).substring(0, 10)
+        dateUI.text = "${dateDisplay}\n"
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                if (REUSE_WORKOUT == 1) {
-//                    Toast.makeText(this, "1", Toast.LENGTH_SHORT).show()
-                    lifecycleScope.launch(Dispatchers.IO) {
-                        val allTodos = viewModel.getListTodos()
-                        for (element in allTodos) {
-                            viewModel.deleteTodo(element)
-                        }
-                    }
-                    REUSE_WORKOUT = 0
-                }
+        when (TYPE_TRAINING) {
+            0 -> {
+                icon.setImageResource(R.drawable.ic_punch)
+                typeExerciseName.text = "Punch Training"
+            }
+            1 -> {
+                icon.setImageResource(R.drawable.ic_weight)
+                typeExerciseName.text = "Weight Training"
+            }
+            2 -> {
+                icon.setImageResource(R.drawable.ic_run)
+                typeExerciseName.text = "Run Training"
+            }
+            3 -> {
+                icon.setImageResource(R.drawable.ic_yoga)
+                typeExerciseName.text = "Yoga Training"
             }
         }
-        return super.onOptionsItemSelected(item)
+
     }
 
     fun startWorkout(view: View) {
+        val notes = findViewById<EditText>(R.id.exerciseNotes)
+        USER_NOTES = notes.text.toString()
         if (INDEX == 0) {
+            updateNotesBeforeLeavingPage()
             val intent = Intent(this@FinalPage, PrepExercise::class.java)
             startActivity(intent)
         }
     }
+
+    fun selectExercise(view: View) {
+        updateNotesBeforeLeavingPage()
+        val intent = Intent(this, SelectPageActivity::class.java)
+        startActivity(intent)
+    }
+
 
     override fun onIconClick(todoDetail: TodoDetail) {
         viewModel.deleteTodo(todoDetail)
@@ -98,18 +157,57 @@ class FinalPage : AppCompatActivity(), FinalPageAdapter.IAdapter {
         startActivity(intent)
     }
 
-//    suspend fun addHistory() {
-//        val allTodos = viewModel.getListTodos() // Gets the list of Todos at Final Page
-//        val date = Date()
-//        if (allTodos.isNotEmpty()) {
-//            viewModel1.insertHistory(
-//                HistoryDetail(
-//                    allTodos as ArrayList<TodoDetail>,
-//                    0,
-//                    "${sdf.format(date)}"
-//                )
-//            )
+    suspend fun addHistory() {
+        val allTodos = viewModel.getListTodos() // Gets the list of Todos at Final Page
+        val date = Date()
+        if (allTodos.isNotEmpty()) {
+            viewModel1.insertHistory(
+                HistoryDetail(
+                    allTodos as ArrayList<TodoDetail>,
+                    0,
+                    "${sdf.format(date)}",
+                    TYPE_TRAINING,
+                    USER_NOTES!!
+                )
+            )
+        }
+    }
+
+    fun recordRun(view: View) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            val editText1 = findViewById<EditText>(R.id.inputStart).text.toString()
+            val editText2 = findViewById<EditText>(R.id.inputEnd).text.toString()
+            val editText3 = findViewById<EditText>(R.id.inputDistance).text.toString()
+            val editText4 = findViewById<EditText>(R.id.inputTime).text.toString()
+            USER_NOTES = findViewById<EditText>(R.id.exerciseNotes).text.toString()
+            val insertingTodo =
+                TodoDetail("Run", editText1, editText2, editText4, editText3, "runx", 0)
+            viewModel.insertTodo(insertingTodo)
+            delay(100)
+            addHistory()
+        }
+        val intent = Intent(this, HomePageActivity::class.java)
+        startActivity(intent)
+    }
+
+    //    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+//        when (item.itemId) {
+//            android.R.id.home -> {
+//                if (REUSE_WORKOUT == 1) {
+//                    Toast.makeText(this, "1", Toast.LENGTH_SHORT).show()
+//                    lifecycleScope.launch(Dispatchers.IO) {
+//                        val allTodos = viewModel.getListTodos()
+//                        for (element in allTodos) {
+//                            viewModel.deleteTodo(element)
+//                        }
+//                    }
+//                    REUSE_WORKOUT = 0
+//                }
+//            }
 //        }
+//        return super.onOptionsItemSelected(item)
+//    }
+
 //        val abc : ArrayList<TodoDetail> = ArrayList()
 //        val x : TodoDetail = TodoDetail("x", "1", "1", "1")
 //        abc.add(x)

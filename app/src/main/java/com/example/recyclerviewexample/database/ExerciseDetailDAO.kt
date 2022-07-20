@@ -24,7 +24,7 @@ interface ExerciseDetailDAO {
     @Query("SELECT * FROM exercise_data_table")
     fun getAllExercises(): LiveData<List<ExerciseDetail>>
 
-    @Query("SELECT * FROM exercise_data_table WHERE exercise_name LIKE :searchQuery")
+    @Query("SELECT * FROM exercise_data_table WHERE exercise_name LIKE :searchQuery OR body_part LIKE :searchQuery")
     fun searchDatabase(searchQuery: String): LiveData<List<ExerciseDetail>>
 
 //    @Query("SELECT exercise_name FROM exercise_data_table WHERE exercise_id LIKE :position")

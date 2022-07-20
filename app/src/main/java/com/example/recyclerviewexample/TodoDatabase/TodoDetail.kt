@@ -22,6 +22,9 @@ class TodoDetail(
     @ColumnInfo(name = "todo_weight")
     val weight: String,
 
+    @ColumnInfo(name = "todo_muscle")
+    val muscle: String,
+
     @ColumnInfo(name = "todo_id")
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0

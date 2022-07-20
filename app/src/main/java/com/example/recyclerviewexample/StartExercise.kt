@@ -17,7 +17,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 
-private val sdf = SimpleDateFormat("yyyy/MM/dd HH:mm:ss")
+val sdf = SimpleDateFormat("dd/MM/yyyy   HH:mm:ss")
 
 class StartExercise : AppCompatActivity() {
 
@@ -176,8 +176,8 @@ class StartExercise : AppCompatActivity() {
                         } else {
                             lifecycleScope.launch(Dispatchers.IO) {
                                 val allTodos = viewModel.getListTodos()
-                                for (i in 0 until TOTALEXERCISESIZE) {
-                                    viewModel.deleteTodo(allTodos[i])
+                                for(elements in allTodos) {
+                                    viewModel.deleteTodo(elements)
                                 }
                             }
                             addHistory() // works
@@ -189,7 +189,7 @@ class StartExercise : AppCompatActivity() {
                                 ).show()
                             }
 //                            Toast.makeText(this@StartExercise, "Congratulations, workout has been saved!", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this@StartExercise, MainPage::class.java)
+                            val intent = Intent(this@StartExercise, HistoryPageActivity::class.java)
                             startActivity(intent)
                         }
                     }
@@ -208,9 +208,12 @@ class StartExercise : AppCompatActivity() {
                 HistoryDetail(
                     allTodos as ArrayList<TodoDetail>,
                     0,
-                    "${sdf.format(date)}"
+                    "${sdf.format(date)}",
+                    TYPE_TRAINING,
+                    USER_NOTES!!
                 )
             )
         }
+        USER_NOTES = "ADDED"
     }
 }

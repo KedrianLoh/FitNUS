@@ -10,18 +10,11 @@ data class ExerciseDetail(
     @ColumnInfo(name = "exercise_name")
     var nameOfExercise: String,
 
-    @ColumnInfo(name = "sets_count")
-    var sets: String,
+    @ColumnInfo(name = "body_part")
+    var muscleInvolved: String,
 
-    @ColumnInfo(name = "reps_count")
-    var reps: String,
-
-    @ColumnInfo(name = "rest_count")
-    var restInterval: String,
-
-//    @ColumnInfo(name = "exercise_id")
-//    @PrimaryKey(autoGenerate = true)
-//    var id: Long = 31
+    @ColumnInfo(name = "default")
+    var canDelete: Int
 ) {}
 
 

@@ -18,7 +18,12 @@ data class HistoryDetail(
     @ColumnInfo(name = "workout_id")
     var workoutId: Int,
 
-    var date: String
+    var date: String,
+
+//  0 = Punch training, 1 = Weight training, 2 = Run training, 3 = Yoga training
+    val type: Int = 0,
+
+    val notes: String
 ) {}
 
 class arrayListTypeConverter {

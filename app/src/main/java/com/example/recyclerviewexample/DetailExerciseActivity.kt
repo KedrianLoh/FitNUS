@@ -27,8 +27,8 @@ class DetailExerciseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_detail_exercise)
-        supportActionBar?.title = "          Exercise Details"
+        setContentView(R.layout.activity_detail_exercise_1)
+        supportActionBar?.hide()
         // initialize viewmodel
         viewModel = ViewModelProvider(this).get(ExerciseViewModel::class.java)
         viewModel1 = ViewModelProvider(this).get(TodoViewModel::class.java)
@@ -39,8 +39,9 @@ class DetailExerciseActivity : AppCompatActivity() {
 //        val itemId: Int = intent.getStringExtra(EXTRA_MESSAGE)!!.toInt()
         if (DETAIL_COUNT == 1) {
             val itemName: String = intent.getStringExtra(EXTRA_MESSAGE)!!
+            val itemMuscle: String = intent.getStringExtra(EXTRA_MESSAGE2)!!
             lifecycleScope.launch(Dispatchers.IO) {
-                btn.text = "Add"
+                btn.text = "Add Exercise !"
                 val exerciseName = findViewById<TextView>(R.id.exerciseName)
                 exerciseName.text = itemName
             }
@@ -66,7 +67,14 @@ class DetailExerciseActivity : AppCompatActivity() {
         }
     }
     override fun onBackPressed() {
-//        super.onBackPressed()
+        if (DETAIL_COUNT == 1) {
+            val intent = Intent(this, SelectPageActivity::class.java)
+            startActivity(intent)
+        }
+        else {
+            val intent = Intent(this, FinalPage::class.java)
+            startActivity(intent)
+        }
     }
 
     private suspend fun updatingExercise(itemName: String) {
@@ -82,7 +90,8 @@ class DetailExerciseActivity : AppCompatActivity() {
         val input5 = editText5.text.toString()
         if (input1.isNotEmpty() && input2.isNotEmpty() && input3.isNotEmpty() && input4.isNotEmpty() && input5.isNotEmpty()) {
             val exerciseId = viewModel1.getTodoDetail(itemName).id
-            viewModel1.updateTodo(TodoDetail(input1, input2, input3, input4, input5, exerciseId))
+            val exerciseMuscle = viewModel1.getTodoDetail(itemName).muscle
+            viewModel1.updateTodo(TodoDetail(input1, input2, input3, input4, input5, exerciseMuscle, exerciseId))
             val intent = Intent(this, FinalPage::class.java)
             startActivity(intent)
         } else {
@@ -102,12 +111,13 @@ class DetailExerciseActivity : AppCompatActivity() {
         val input3 = editText3.text.toString()
         val input4 = editText4.text.toString()
         val input5 = editText5.text.toString()
+        val input6 = intent.getStringExtra(EXTRA_MESSAGE2)!!
         if (input1.isNotEmpty() && input2.isNotEmpty() && input3.isNotEmpty() && input4.isNotEmpty() && input5.isNotEmpty()) {
             // we need viewmodel here
-            viewModel1.insertTodo(TodoDetail(input1, input2, input3, input4, input5))
+            viewModel1.insertTodo(TodoDetail(input1, input2, input3, input4, input5, input6))
             Toast.makeText(this, "$input1 successfully added", Toast.LENGTH_SHORT).show()
             // move to activity
-            val intent = Intent(this, MainActivity::class.java)
+            val intent = Intent(this, SelectPageActivity::class.java)
             startActivity(intent)
         } else {
             Toast.makeText(this, "Missing Details!", Toast.LENGTH_SHORT).show()

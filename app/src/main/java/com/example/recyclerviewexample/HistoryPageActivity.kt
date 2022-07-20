@@ -1,40 +1,35 @@
 package com.example.recyclerviewexample
 
-import android.app.ActionBar.DISPLAY_SHOW_CUSTOM
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Toast
-import androidx.appcompat.app.ActionBar
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.recyclerviewexample.HistoryDatabase.HistoryDetail
-import com.example.recyclerviewexample.TodoDatabase.TodoDetail
-import kotlinx.android.synthetic.main.activity_main_page.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 //var  WORKOUT_HISTORY_INFO : List<TodoDetail>? = null
-var  WORKOUT_HISTORY_INFO : HistoryDetail? = null
+var WORKOUT_HISTORY_INFO: HistoryDetail? = null
 
-class MainPage : AppCompatActivity(), ExampleAdapter.OnItemClickListener {
+class HistoryPageActivity : AppCompatActivity(), SelectPageAdapter.OnItemClickListener {
 
-    private val adapter = MainPageAdapter(this)
+    private val adapter = HistoryPageAdapter(this)
     private lateinit var viewModel: HistoryViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main_page)
+        setContentView(R.layout.neumorphism_history)
+        supportActionBar?.hide()
+//        supportActionBar?.title = "Create Workout!"
 
-        supportActionBar?.title = "Create Workout!"
-
+        val recyclerView: RecyclerView = findViewById(R.id.recyclerViewDone)
         recyclerView.adapter = adapter // adapter for recycler view
         recyclerView.layoutManager = LinearLayoutManager(this) // defines the horizontal layout
         (recyclerView.layoutManager as LinearLayoutManager).setStackFromEnd(true);
@@ -46,8 +41,10 @@ class MainPage : AppCompatActivity(), ExampleAdapter.OnItemClickListener {
             adapter.updateData(it)
         })
     }
+
     override fun onBackPressed() {
-//        super.onBackPressed()
+        val intent = Intent(this, HomePageActivity::class.java)
+        startActivity(intent)
     }
 
     override fun onItemClick(position: Int) {
@@ -62,7 +59,7 @@ class MainPage : AppCompatActivity(), ExampleAdapter.OnItemClickListener {
     }
 
     fun createNewWorkout(view: View) {
-        val intent = Intent(this, MainActivity::class.java)
+        val intent = Intent(this, SelectPageActivity::class.java)
         startActivity(intent)
     }
 

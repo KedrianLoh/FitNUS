@@ -17,18 +17,14 @@ class WorkoutHistoryInfoAdapter(private val listener: WorkoutHistoryInfoActivity
 
 
     class FinalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val textView1: TextView = itemView.findViewById(R.id.text_view_1)
-        val textView2: TextView = itemView.findViewById(R.id.text_view_2)
-        val textView3: TextView = itemView.findViewById(R.id.text_view_3)
-        val textView4: TextView = itemView.findViewById(R.id.text_view_4)
-        val textView8: TextView = itemView.findViewById(R.id.text_view_8)
-        val textView9: TextView = itemView.findViewById(R.id.text_view_9)
-        val textView10: TextView = itemView.findViewById(R.id.text_view_10)
+        val textView1: TextView = itemView.findViewById(R.id.textTitle)
+        val textView2: TextView = itemView.findViewById(R.id.textMuscle)
+        val imageView1: ImageView = itemView.findViewById(R.id.displayMuscle)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): FinalViewHolder {
         val viewHolder = FinalViewHolder(
-            LayoutInflater.from(parent.context).inflate(R.layout.history_example_item, parent, false)
+            LayoutInflater.from(parent.context).inflate(R.layout.exercise_item_2, parent, false)
         )
         return viewHolder
     }
@@ -36,13 +32,34 @@ class WorkoutHistoryInfoAdapter(private val listener: WorkoutHistoryInfoActivity
     override fun onBindViewHolder(holder: FinalViewHolder, position: Int) {
         val currentItem = allHistory!![position]
         holder.textView1.text = currentItem.name
-        holder.textView2.text = currentItem.sets
-        holder.textView3.text = currentItem.reps
-        holder.textView4.text = currentItem.time
-        holder.textView8.text = currentItem.weight
+        when (WORKOUT_HISTORY_INFO!!.type) {
+
+            0 -> {}
+
+            1 -> {
+                holder.textView2.text =
+                    "Sets: ${currentItem.sets} | Reps: ${currentItem.reps} | Rest: ${currentItem.time}"
+            }
+
+            2 -> {
+                holder.textView2.text = "Start: ${currentItem.sets} | End : ${currentItem.reps}"
+                holder.imageView1.setImageResource(R.drawable.ic_run)
+            }
+
+            3 -> {}
+        }
+//        holder.imageView1.setImageResource(R.drawable.ic_weight)
+        when (currentItem.muscle) {
+            "chest" -> holder.imageView1.setImageResource(R.drawable.ic_chest)
+            "back" -> holder.imageView1.setImageResource(R.drawable.ic_back)
+            "shoulders" -> holder.imageView1.setImageResource(R.drawable.ic_shoulder)
+            "abs" -> holder.imageView1.setImageResource(R.drawable.ic_abs)
+            "arms" -> holder.imageView1.setImageResource(R.drawable.ic_arms)
+            "legs" -> holder.imageView1.setImageResource(R.drawable.ic_legs)
+        }
     }
 
     override fun getItemCount(): Int {
-       return allHistory!!.size
+        return allHistory!!.size
     }
 }

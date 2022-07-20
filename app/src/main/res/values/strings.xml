@@ -16,4 +16,12 @@
     <string name="register">Register</string>
     <string name="back"><![CDATA[< Back]]></string>
 
+    <string-array name="TargetMuscle">
+        <item>chest</item>
+        <item>back</item>
+        <item>arms</item>
+        <item>legs</item>
+        <item>abs</item>
+    </string-array>
+    
 </resources>

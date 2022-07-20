@@ -13,25 +13,24 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.recyclerviewexample.database.ExerciseDetail
-import com.google.android.material.navigation.NavigationView
 
 const val EXTRA_MESSAGE = "com.example.recyclerviewexample.MESSAGE"
+const val EXTRA_MESSAGE2 = "com.example.recycerviewexample.MESSAGE2"
 var DETAIL_COUNT = 0
 var DELETE_EXERCISE_MODE = 0
 
-class MainActivity : AppCompatActivity(), ExampleAdapter.OnItemClickListener,
+class SelectPageActivity : AppCompatActivity(), SelectPageAdapter.OnItemClickListener,
     SearchView.OnQueryTextListener {
 
     private lateinit var viewModel: ExerciseViewModel
     private lateinit var builder: AlertDialog.Builder
 
-    val adapter = ExampleAdapter(this)
+    val adapter = SelectPageAdapter(this)
 //    private val allExercises = ArrayList<ExerciseDetail>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_select_page)
         DELETE_EXERCISE_MODE = 0
         supportActionBar?.title = "Select Exercises"
 
@@ -50,7 +49,8 @@ class MainActivity : AppCompatActivity(), ExampleAdapter.OnItemClickListener,
     }
 
     override fun onBackPressed() {
-//        super.onBackPressed()
+        val intent = Intent(this, FinalPage::class.java)
+        startActivity(intent)
     }
 
     fun insertItem(view: View) {
@@ -87,10 +87,12 @@ class MainActivity : AppCompatActivity(), ExampleAdapter.OnItemClickListener,
                 .show()
         } else {
             val currentItemName: String = adapter.allExercises[position].nameOfExercise
+            val currentItemMuscle: String = adapter.allExercises[position].muscleInvolved
             DETAIL_COUNT = 1
 //            Toast.makeText(this, "$currentItemName clicked", Toast.LENGTH_SHORT).show()
             val intent = Intent(this, DetailExerciseActivity::class.java).apply {
                 putExtra(EXTRA_MESSAGE, currentItemName)
+                putExtra(EXTRA_MESSAGE2, currentItemMuscle)
             }
             startActivity(intent)
         }

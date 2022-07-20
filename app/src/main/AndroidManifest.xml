@@ -13,50 +13,70 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RecyclerViewExample"
         tools:targetApi="31">
+
         <activity
-            android:name=".StartExercise"
-            android:exported="false" />
-        <activity
-            android:name=".PrepExercise"
-            android:exported="false"
-            android:parentActivityName=".FinalPage"/>
-        <activity
-            android:name=".WorkoutHistoryInfoActivity"
-            android:exported="false"
-            android:parentActivityName=".MainPage" />
-        <activity
-            android:name=".FinalPage"
-            android:exported="false"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".InsertExercise"
-            android:exported="false"
-            android:parentActivityName=".MainActivity"/>
-        <activity
-            android:name=".MainPage"
-            android:exported="false" />
-        <activity
-            android:name=".Registration"
-            android:exported="false"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false"
-            android:parentActivityName=".MainPage" />
-        <activity
-            android:name=".DetailExerciseActivity"
-            android:exported="false"
-            android:parentActivityName=".MainActivity" />
-        <activity
-            android:name=".MainActivity2"
+            android:name=".HomePageActivity"
+            android:screenOrientation="portrait"
             android:exported="true"
-            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar">
+            android:theme="@style/FullScreen" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".StartExercise"
+            android:screenOrientation="portrait"
+            android:exported="false" />
+        <activity
+            android:name=".PrepExercise"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:parentActivityName=".FinalPage" />
+        <activity
+            android:name=".WorkoutHistoryInfoActivity"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:parentActivityName=".HistoryPageActivity" />
+        <activity
+            android:name=".FinalPage"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:parentActivityName=".SelectPageActivity" />
+        <activity
+            android:name=".InsertExercise"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:parentActivityName=".SelectPageActivity" />
+        <activity
+            android:name=".HistoryPageActivity"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:theme="@style/FullScreen" />
+        <activity
+            android:name=".Registration"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+        <activity
+            android:name=".SelectPageActivity"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:parentActivityName=".HistoryPageActivity" />
+        <activity
+            android:name=".DetailExerciseActivity"
+            android:screenOrientation="portrait"
+            android:exported="false"
+            android:parentActivityName=".SelectPageActivity" />
+        <activity
+            android:name=".MainActivity2"
+            android:screenOrientation="portrait"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+
+        <meta-data
+            android:name="preloaded_fonts"
+            android:resource="@array/preloaded_fonts" />
     </application>
 
-</manifest>
+    </manifest>
